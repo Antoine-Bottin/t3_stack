@@ -5,35 +5,34 @@ import { api } from '~/trpc/react'
 const TestPost = () => {
     const options = [
         {
-            label: 'A',
-            value: 'a',
+            label: 'Blue',
+            value: 'blue',
         },
         {
-            label: 'B',
-            value: 'b',
+            label: 'Brown',
+            value: 'brown',
         },
         {
-            label: 'C',
-            value: 'a',
-        },
-        {
-            label: 'A',
-            value: 'a',
+            label: 'Green',
+            value: 'green',
         },
     ]
 
     const [userName, setUserName] = useState<string>('')
-    const [choice, setChoice] = useState<string>('')
-    console.log(choice)
+    const [age, setAge] = useState<number>()
+    const [job, setJob] = useState<string>('')
+    const [city, setCity] = useState<string>('')
+    const [eyeColor, setEyeColor] = useState<string>('')
+    const [presentation, setPresentation] = useState<string>('')
 
     const utils = api.useUtils()
 
-    // const createUserInfos = api.userInfos.createUserInfos.useMutation({
-    //     onSuccess: async () => {
-    //         await utils.userInfos.invalidate()
-    //         setUserName('')
-    //     },
-    // })
+    const createUserInfos = api.userInfos.createUserInfos.useMutation({
+        onSuccess: async () => {
+            await utils.userInfos.invalidate()
+            setUserName('')
+        },
+    })
 
     const {
         data: userInfos,
@@ -48,9 +47,14 @@ const TestPost = () => {
                 className="flex flex-col gap-y-6"
                 onSubmit={async (e) => {
                     e.preventDefault()
-                    // createUserInfos.mutate({
-                    //     userName,
-                    // })
+                    createUserInfos.mutate({
+                        userName: userName,
+                        age: age,
+                        job: job,
+                        city: city,
+                        eyeColor: eyeColor,
+                        presentation: presentation,
+                    })
                 }}
             >
                 <label className="text-center">Formulaire</label>
@@ -62,9 +66,10 @@ const TestPost = () => {
                     className="w-full rounded-full px-4 py-2 text-black"
                 />
                 <select
-                    className="w-full rounded-full px-4 py-2 text-black"
-                    onChange={(e) => setChoice(e.target.value)}
+                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer"
+                    onChange={(e) => setEyeColor(e.target.value)}
                 >
+                    <option hidden>Select your eye color</option>
                     {options.map(({ label, value }, idx) => (
                         <option value={value} key={idx}>
                             {label}
@@ -76,7 +81,7 @@ const TestPost = () => {
                     // disabled={createTestPost.isPending}
                     type="submit"
                 >
-                    Damned
+                    Sent that form
                 </button>
             </form>
         </div>
