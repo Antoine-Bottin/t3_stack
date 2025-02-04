@@ -26,16 +26,21 @@ model Post {
     @@index([name])
 }
 
-model TestPost {
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model UserInfos {
+    id          Int      @id @default(autoincrement())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+    createdById String @default("cm6p3n2az0002b1pw67y1wvua")
+    userName    String?
+    age         Int?
+    job         String?
+    city        String?
+    eyeColor    String?
+    presentation    String?
 
-    text    String
-    @@index([text])
+    @@index([userName])
 }
 
 // Necessary for Next auth
@@ -68,6 +73,7 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
+    userId        String    @default("cm6p3n2az0002b1pw67y1wvua")
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -75,7 +81,8 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    testPost      TestPost[]
+    userInfos     UserInfos[]
+    
 }
 
 model VerificationToken {
