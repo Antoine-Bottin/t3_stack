@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { api } from '~/trpc/react'
 
-const TestPost = () => {
+const CharacterForm = () => {
     const options = [
         {
             label: 'Blue',
@@ -18,28 +18,29 @@ const TestPost = () => {
         },
     ]
 
-    const [userName, setUserName] = useState<string>('')
-    const [age, setAge] = useState<number>()
+    const [name, setName] = useState<string>('')
+    const [age, setAge] = useState<number>(0)
     const [job, setJob] = useState<string>('')
+    const [size, setSize] = useState<number>(0)
     const [city, setCity] = useState<string>('')
     const [eyeColor, setEyeColor] = useState<string>('')
     const [presentation, setPresentation] = useState<string>('')
 
     const utils = api.useUtils()
 
-    const createUserInfos = api.userInfos.createUserInfos.useMutation({
+    const createCharacter = api.character.createCharacter.useMutation({
         onSuccess: async () => {
-            await utils.userInfos.invalidate()
-            setUserName('')
+            await utils.character.invalidate()
+            setName('')
         },
     })
 
     const {
-        data: userInfos,
+        data: character,
         isLoading,
         error,
-    } = api.userInfos.getUserInfos.useQuery()
-    console.log(userInfos, isLoading, error)
+    } = api.character.getCharacter.useQuery()
+    console.log(character, isLoading, error)
 
     return (
         <div>
@@ -47,22 +48,23 @@ const TestPost = () => {
                 className="flex flex-col gap-y-6"
                 onSubmit={async (e) => {
                     e.preventDefault()
-                    createUserInfos.mutate({
-                        userName: userName,
+                    createCharacter.mutate({
+                        name: name,
                         age: age,
                         job: job,
                         city: city,
                         eyeColor: eyeColor,
                         presentation: presentation,
+                        size: size,
                     })
                 }}
             >
-                <label className="text-center">Formulaire</label>
+                <label className="text-center">Create New Character</label>
                 <input
                     type="text"
                     placeholder="Name"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full rounded-full px-4 py-2 text-black"
                 />
                 <select
@@ -81,11 +83,11 @@ const TestPost = () => {
                     // disabled={createTestPost.isPending}
                     type="submit"
                 >
-                    Sent that form
+                    Send that form
                 </button>
             </form>
         </div>
     )
 }
 
-export default TestPost
+export default CharacterForm

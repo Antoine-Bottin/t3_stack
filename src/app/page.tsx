@@ -1,6 +1,6 @@
 import { auth } from '~/server/auth'
 import { api, HydrateClient } from '~/trpc/server'
-import TestPost from './_components/userForm'
+import CharacterForm from './_components/characterForm'
 
 export default async function Home() {
     // const hello = await api.post.hello({ text: 'from tRPC' })
@@ -24,7 +24,7 @@ export default async function Home() {
                     {session?.user && (
                         <>
                             {/* <LatestPost /> */}
-                            <TestPost />
+                            <CharacterForm />
                         </>
                     )}
                 </div>

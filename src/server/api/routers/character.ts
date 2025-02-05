@@ -1,10 +1,10 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
-export const userInfosRouter = createTRPCRouter({
+export const characterRouter = createTRPCRouter({
     // Fetch all UserInfos
-    getUserInfos: publicProcedure.query(async ({ ctx }) => {
+    getCharacter: publicProcedure.query(async ({ ctx }) => {
         try {
-            return await ctx.db.userInfos.findMany({
+            return await ctx.db.character.findMany({
                 include: { createdBy: true },
             })
         } catch (error) {
@@ -12,24 +12,26 @@ export const userInfosRouter = createTRPCRouter({
         }
     }),
     //Create new user infos mutation
-    createUserInfos: protectedProcedure
+    createCharacter: protectedProcedure
         .input(
             z.object({
-                userName: z.string().min(1),
-                age: z.number().optional(),
-                job: z.string().optional(),
-                city: z.string().optional(),
-                eyeColor: z.string().optional(),
-                presentation: z.string().optional(),
+                name: z.string().min(1),
+                age: z.number(),
+                job: z.string(),
+                city: z.string(),
+                eyeColor: z.string(),
+                presentation: z.string(),
+                size: z.number(),
             })
         )
         .mutation(async ({ ctx, input }) => {
-            return ctx.db.userInfos.create({
+            return ctx.db.character.create({
                 data: {
-                    userName: input.userName,
+                    name: input.name,
                     age: input.age,
                     job: input.job,
                     city: input.city,
+                    size: input.size,
                     eyeColor: input.eyeColor,
                     presentation: input.presentation,
                     createdBy: { connect: { id: ctx.session.user.id } },
