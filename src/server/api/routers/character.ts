@@ -16,14 +16,16 @@ export const characterRouter = createTRPCRouter({
     getCharacterById: publicProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input }) => {
-            try {
-                const response = await ctx.db.character.findUnique({
-                    where: { id: input.id },
-                })
-                return response
-            } catch (error) {
-                console.error('Error fetching character:', error)
-                throw new Error('Error fetching character')
+            console.log(input)
+            if (input.id) {
+                try {
+                    const response = await ctx.db.character.findUnique({
+                        where: { id: input.id },
+                    })
+                    return response
+                } catch (error) {
+                    console.error('Error fetching userInfos:', error)
+                }
             }
         }),
 

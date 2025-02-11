@@ -6,7 +6,7 @@ export default async function Home() {
     const session = await auth()
 
     if (session?.user) {
-        void api.post.getLatest.prefetch()
+        await api.post.getLatest.prefetch()
     }
     console.log(session?.user)
     return (

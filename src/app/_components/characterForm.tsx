@@ -20,9 +20,9 @@ const CharacterForm = () => {
     ]
 
     const [name, setName] = useState<string>('')
-    const [age, setAge] = useState<number>()
+    const [age, setAge] = useState<string>('')
     const [job, setJob] = useState<string>('')
-    const [size, setSize] = useState<number>()
+    const [size, setSize] = useState<string>('')
     const [city, setCity] = useState<string>('')
     const [eyeColor, setEyeColor] = useState<string>('')
     const [presentation, setPresentation] = useState<string>('')
@@ -33,6 +33,12 @@ const CharacterForm = () => {
         onSuccess: async () => {
             await utils.character.invalidate()
             setName('')
+            setAge('')
+            setJob('')
+            setSize('')
+            setCity('')
+            setEyeColor('')
+            setPresentation('')
         },
     })
 
@@ -51,12 +57,12 @@ const CharacterForm = () => {
                     e.preventDefault()
                     createCharacter.mutate({
                         name: name,
-                        age: age ?? 0,
+                        age: age ? Number(age) : 0,
                         job: job,
                         city: city,
                         eyeColor: eyeColor,
                         presentation: presentation,
-                        size: size ?? 0,
+                        size: size ? Number(size) : 0,
                     })
                 }}
             >
@@ -74,7 +80,7 @@ const CharacterForm = () => {
                     min={0}
                     max={110}
                     value={age}
-                    onChange={(e) => setAge(Number(e.target.value))}
+                    onChange={(e) => setAge(e.target.value)}
                     className="w-full rounded-full px-4 py-2 text-black"
                 />
                 <input
@@ -83,7 +89,7 @@ const CharacterForm = () => {
                     value={size}
                     step={10}
                     min={0}
-                    onChange={(e) => setSize(Number(e.target.value))}
+                    onChange={(e) => setSize(e.target.value)}
                     className="w-full rounded-full px-4 py-2 text-black"
                 />
                 <input
@@ -102,6 +108,7 @@ const CharacterForm = () => {
                 />
                 <select
                     className="w-full rounded-full px-4 py-2 text-black"
+                    value={eyeColor}
                     onChange={(e) => setEyeColor(e.target.value)}
                 >
                     <option hidden>Select your eye color</option>
@@ -119,7 +126,6 @@ const CharacterForm = () => {
                 />
                 <button
                     className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
-                    // disabled={createTestPost.isPending}
                     type="submit"
                 >
                     Send that form
@@ -127,7 +133,7 @@ const CharacterForm = () => {
                 {isLoading ? (
                     <div>Loading...</div>
                 ) : (
-                    <div className="flex  gap-x-4 flex-wrap">
+                    <div className="flex gap-x-4 flex-wrap">
                         {character?.map(({ name, id }) => {
                             return (
                                 <Link
