@@ -1,8 +1,8 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
 export const characterRouter = createTRPCRouter({
-    // Fetch all UserInfos
-    getCharacter: publicProcedure.query(async ({ ctx }) => {
+    // Fetch all characters
+    getAllCharacters: publicProcedure.query(async ({ ctx }) => {
         try {
             return await ctx.db.character.findMany({
                 include: { createdBy: true },
@@ -11,7 +11,23 @@ export const characterRouter = createTRPCRouter({
             console.error('Error fetching userInfos:', error)
         }
     }),
-    //Create new user infos mutation
+
+    //Fetch character by id
+    getCharacterById: publicProcedure
+        .input(z.object({ id: z.string() }))
+        .query(async ({ ctx, input }) => {
+            try {
+                const response = await ctx.db.character.findUnique({
+                    where: { id: input.id },
+                })
+                return response
+            } catch (error) {
+                console.error('Error fetching character:', error)
+                throw new Error('Error fetching character')
+            }
+        }),
+
+    //Create new character mutation
     createCharacter: protectedProcedure
         .input(
             z.object({
@@ -25,7 +41,7 @@ export const characterRouter = createTRPCRouter({
             })
         )
         .mutation(async ({ ctx, input }) => {
-            return ctx.db.character.create({
+            const character = ctx.db.character.create({
                 data: {
                     name: input.name,
                     age: input.age,
@@ -37,5 +53,7 @@ export const characterRouter = createTRPCRouter({
                     createdBy: { connect: { id: ctx.session.user.id } },
                 },
             })
+
+            return character
         }),
 })
