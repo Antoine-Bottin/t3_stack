@@ -58,6 +58,7 @@ export const characterRouter = createTRPCRouter({
 
             return character
         }),
+
     //Remove character by Id
     removeCharacter: protectedProcedure
         .input(z.object({ id: z.string() }))

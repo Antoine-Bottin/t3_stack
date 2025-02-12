@@ -146,7 +146,9 @@ const Page = () => {
                     )}
                 </button>
                 {isLoading ? (
-                    <Loader />
+                    <div className="flex justify-center items-center">
+                        <Loader />
+                    </div>
                 ) : (
                     <div className="flex gap-x-4 flex-wrap mt-4">
                         {character?.map(({ name, id }) => {
