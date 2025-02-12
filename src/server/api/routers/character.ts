@@ -58,4 +58,16 @@ export const characterRouter = createTRPCRouter({
 
             return character
         }),
+    //Remove character by Id
+    removeCharacter: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            try {
+                await ctx.db.character.delete({
+                    where: { id: input.id },
+                })
+            } catch (error) {
+                console.log('Error while removing character', error)
+            }
+        }),
 })
