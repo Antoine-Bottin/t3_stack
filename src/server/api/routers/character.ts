@@ -1,15 +1,14 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
 export const characterRouter = createTRPCRouter({
-    //Fetch all characters
+    // Fetch all characters
     getAllCharacters: publicProcedure.query(async ({ ctx }) => {
         try {
-            const response = await ctx.db.character.findMany({
+            return await ctx.db.character.findMany({
                 include: { createdBy: true },
             })
-            return response
         } catch (error) {
-            console.error('Error fetching all characters:', error)
+            console.error('Error fetching userInfos:', error)
         }
     }),
 
@@ -17,13 +16,16 @@ export const characterRouter = createTRPCRouter({
     getCharacterById: publicProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input }) => {
-            try {
-                const response = await ctx.db.character.findUnique({
-                    where: { id: input.id },
-                })
-                return response
-            } catch (error) {
-                console.error('Error fetching one character:', error)
+            if (input.id) {
+                try {
+                    const response = await ctx.db.character.findUnique({
+                        where: { id: input.id },
+                    })
+
+                    return response
+                } catch (error) {
+                    console.error('Error fetching userInfos:', error)
+                }
             }
         }),
 
@@ -41,33 +43,19 @@ export const characterRouter = createTRPCRouter({
             })
         )
         .mutation(async ({ ctx, input }) => {
-            try {
-                await ctx.db.character.create({
-                    data: {
-                        name: input.name,
-                        age: input.age,
-                        job: input.job,
-                        city: input.city,
-                        size: input.size,
-                        eyeColor: input.eyeColor,
-                        presentation: input.presentation,
-                        createdBy: { connect: { id: ctx.session.user.id } },
-                    },
-                })
-            } catch (error) {
-                console.error('Error creating new character:', error)
-            }
-        }),
-    //Remove character by Id
-    removeCharacter: protectedProcedure
-        .input(z.object({ id: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            try {
-                await ctx.db.character.delete({
-                    where: { id: input.id },
-                })
-            } catch (error) {
-                console.log('Error while removing character', error)
-            }
+            const character = ctx.db.character.create({
+                data: {
+                    name: input.name,
+                    age: input.age,
+                    job: input.job,
+                    city: input.city,
+                    size: input.size,
+                    eyeColor: input.eyeColor,
+                    presentation: input.presentation,
+                    createdBy: { connect: { id: ctx.session.user.id } },
+                },
+            })
+
+            return character
         }),
 })

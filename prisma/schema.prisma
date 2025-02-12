@@ -33,7 +33,7 @@ model Character {
 
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
-
+    
     name        String?
     age         Int
     size        Int
