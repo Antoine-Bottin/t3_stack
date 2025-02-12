@@ -13,7 +13,14 @@ export default async function Home() {
     console.log(session?.user)
     return (
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-            {session?.user && <h1>Hello {session.user.name}</h1>}
+            {session?.user ? (
+                <>
+                    <h1>Hello {session.user.name}</h1>
+                    <Link href="/api/auth/signout">Sign out</Link>
+                </>
+            ) : (
+                <Link href="/api/auth/signin">Sign in</Link>
+            )}
             <div>Do you want to create nice characters?</div>
             <Link
                 href="/character"
